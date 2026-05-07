@@ -72,3 +72,29 @@ function makeDemo() {
 
     });
 }
+
+function makeList() {
+    var d1 = [8, 2, 4, 2, 9, 4, 1, 7, 5, 1, 9, 2];
+    var d2 = [0, 4, 2, 1, 4, 3, 4, 2, 6, 9, 5, 8];
+
+    var n = d1.length, mx = d3.max(d3.merge([d1, d2]));
+    var svg = d3.select("#stagger");
+
+    var scX = d3.scaleLinear().domain([0, n]).range([50, 540]);
+    var scY = d3.scaleLinear().domain([0, mx]).range([250, 50]);
+
+    svg.selectAll("line")
+        .data(d1)
+        .enter()
+        .append("line")
+        .attr("stroke", "red").attr("stroke-width", 20)
+        .attr("x1", (d, i) => scX(i)).attr("y1", scY(0))
+        .attr("x2", (d, i) => scX(i)).attr("y2", d => scY(d))
+
+    svg.on("click", function () {
+        [d1, d2] = [d2, d1];
+
+        svg.selectAll("line").data(d1).transition().duration(1000).delay((d, i) => 200 * i).attr("y2", d => scY(d));
+    })
+
+}
